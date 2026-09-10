@@ -197,3 +197,5 @@ export function useTierListController(
     save,
   }
 }
+
+export type TierListController = ReturnType<typeof useTierListController>
