@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { TierBoard } from './TierBoard'
 import { useTierListController } from './useTierListController'
 
@@ -6,6 +6,18 @@ export function TierListPage() {
   const controller = useTierListController()
   const [newCategoryName, setNewCategoryName] = useState('')
   const [categoryError, setCategoryError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const preventFileNavigation = (event: DragEvent) => {
+      if (event.dataTransfer?.types.includes('Files')) event.preventDefault()
+    }
+    window.addEventListener('dragover', preventFileNavigation)
+    window.addEventListener('drop', preventFileNavigation)
+    return () => {
+      window.removeEventListener('dragover', preventFileNavigation)
+      window.removeEventListener('drop', preventFileNavigation)
+    }
+  }, [])
 
   const handleAddCategory = (event: FormEvent) => {
     event.preventDefault()

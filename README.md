@@ -1,8 +1,9 @@
 # Tier List Builder
 
 A compact React and TypeScript application for creating an image-based tier
-list. Images can be reordered or moved between the Item List and categories by
-dragging, keyboard dragging, or conventional controls.
+list. Images can be selected or dropped into the Item List, then reordered or
+moved between containers by dragging, keyboard dragging, or conventional
+controls.
 
 ## Run locally
 

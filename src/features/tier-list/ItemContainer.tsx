@@ -3,6 +3,7 @@ import {
   horizontalListSortingStrategy,
   SortableContext,
 } from '@dnd-kit/sortable'
+import { useState, type DragEvent } from 'react'
 import type { Category, ContainerRef } from '../../domain/tierList'
 import { CategoryName } from './CategoryName'
 import { containerDndId, itemDndId, type ContainerDragData } from './dnd'
@@ -24,16 +25,36 @@ export function ItemContainer({
   category?: Category
   controller: TierListController
 }) {
+  const [isFileOver, setIsFileOver] = useState(false)
+  const acceptsFiles = container.type === 'item-list' && !controller.isSaving
   const { setNodeRef, isOver } = useDroppable({
     id: containerDndId(container),
     data: { type: 'container', container } satisfies ContainerDragData,
     disabled: controller.isSaving,
   })
 
+  const handleFileDrag = (event: DragEvent<HTMLElement>) => {
+    if (!acceptsFiles || !event.dataTransfer.types.includes('Files')) return
+    event.preventDefault()
+    event.dataTransfer.dropEffect = 'copy'
+    setIsFileOver(true)
+  }
+
+  const handleFileDrop = (event: DragEvent<HTMLElement>) => {
+    if (!acceptsFiles || !event.dataTransfer.types.includes('Files')) return
+    event.preventDefault()
+    setIsFileOver(false)
+    controller.addFiles(event.dataTransfer.files)
+  }
+
   return (
     <article
-      className={`item-container ${isOver ? 'is-over' : ''}`}
+      className={`item-container ${isOver || isFileOver ? 'is-over' : ''}`}
       aria-label={title}
+      onDragEnter={handleFileDrag}
+      onDragOver={handleFileDrag}
+      onDragLeave={() => setIsFileOver(false)}
+      onDrop={handleFileDrop}
     >
       <div className="container-heading">
         {category ? (
@@ -72,7 +93,11 @@ export function ItemContainer({
       >
         <div ref={setNodeRef} className="items" aria-label={`${title} items`}>
           {itemIds.length === 0 ? (
-            <p className="container-empty">Drop images here</p>
+            <p className="container-empty">
+              {container.type === 'item-list'
+                ? 'Drop image files here, or use Add images above'
+                : 'Move or drag items here'}
+            </p>
           ) : (
             itemIds.map((itemId, index) => (
               <SortableItem

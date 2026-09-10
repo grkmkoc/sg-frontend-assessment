@@ -1,4 +1,11 @@
-import { cleanup, render, screen, waitFor, within } from '@testing-library/react'
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { TierListPage } from './TierListPage'
@@ -31,6 +38,18 @@ describe('TierListPage', () => {
     expect(screen.getByRole('alert')).toHaveTextContent(
       'Category name is required',
     )
+  })
+
+  it('imports a dropped image into Item List', () => {
+    render(<TierListPage />)
+    const itemList = screen.getByRole('article', { name: 'Item List' })
+    const image = new File(['image'], 'dropped.png', { type: 'image/png' })
+
+    fireEvent.drop(itemList, {
+      dataTransfer: { files: [image], types: ['Files'], dropEffect: 'none' },
+    })
+
+    expect(within(itemList).getByText('dropped.png')).toBeVisible()
   })
 
   it('adds an image, moves it without dragging, and saves multipart data', async () => {
