@@ -107,7 +107,7 @@ export function receiveTierList(
     const summary = {
       categoryCount: payload.categories.length,
       itemCount: references.length,
-      files: references.map((reference) => files.get(reference)),
+      files: references.map((reference) => files.get(reference)!),
     }
     console.info('Accepted tier-list submission', summary)
     sendJson(response, 201, summary)

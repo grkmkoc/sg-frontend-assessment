@@ -26,7 +26,21 @@ export async function saveTierList(
 
   if (!response.ok) {
     const body = await response.text()
-    throw new Error(body || `Save failed with status ${response.status}`)
+    let message = body
+    try {
+      const parsed: unknown = JSON.parse(body)
+      if (
+        typeof parsed === 'object' &&
+        parsed !== null &&
+        'error' in parsed &&
+        typeof parsed.error === 'string'
+      ) {
+        message = parsed.error
+      }
+    } catch {
+      // A plain-text error body is already suitable for display.
+    }
+    throw new Error(message || `Save failed with status ${response.status}`)
   }
 
   return response.json() as Promise<SubmissionSummary>
