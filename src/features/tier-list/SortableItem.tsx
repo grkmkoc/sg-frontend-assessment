@@ -44,23 +44,31 @@ export function SortableItem({
       style={style}
       className={`item-card ${isDragging ? 'is-dragging' : ''}`}
     >
-      <div className="thumbnail-frame">
+      <button
+        className="thumbnail-frame thumbnail-drag-handle"
+        type="button"
+        disabled={controller.isSaving}
+        aria-label={`Drag ${item.file.name}`}
+        title="Drag to move"
+        {...attributes}
+        {...listeners}
+      >
         {previewUrl ? <img src={previewUrl} alt="" /> : null}
-      </div>
+        <span className="drag-grip" aria-hidden="true">
+          <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor">
+            <circle cx="5" cy="4" r="1.2" />
+            <circle cx="11" cy="4" r="1.2" />
+            <circle cx="5" cy="8" r="1.2" />
+            <circle cx="11" cy="8" r="1.2" />
+            <circle cx="5" cy="12" r="1.2" />
+            <circle cx="11" cy="12" r="1.2" />
+          </svg>
+        </span>
+      </button>
       <p className="filename" title={item.file.name}>
         {item.file.name}
       </p>
       <div className="item-actions">
-        <button
-          className="drag-handle"
-          type="button"
-          disabled={controller.isSaving}
-          aria-label={`Drag ${item.file.name}`}
-          {...attributes}
-          {...listeners}
-        >
-          Drag
-        </button>
         <button
           className="icon-button"
           type="button"
