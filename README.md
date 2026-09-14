@@ -3,6 +3,8 @@
 A React and TypeScript take-home for importing images, organizing them into ranked
 categories, and submitting the categorized subset as multipart form data.
 
+![Tier List](docs/tier-list.png)
+
 ## Quick start
 
 ### Option A — Docker (recommended for reviewers)
