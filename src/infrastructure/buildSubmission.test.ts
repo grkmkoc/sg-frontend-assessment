@@ -58,14 +58,16 @@ describe('buildSubmission', () => {
     expect(buildSubmission(state).payload).toEqual(buildSubmission(state).payload)
   })
 
-  it('rejects incomplete boards with unassigned items', () => {
+  it('submits categorized items while leaving Item List items unassigned', () => {
     const state = completeState()
     state.itemList.push('id-one')
     state.categories[0].itemIds = ['id-two']
 
-    expect(() => buildSubmission(state)).toThrow(
-      'Move every item into a category before saving',
-    )
+    const { payload, formData } = buildSubmission(state)
+
+    expect(payload.categories[0].items).toEqual(['image_id-two'])
+    expect(formData.get('image_id-two')).toBeInstanceOf(File)
+    expect(formData.has('image_id-one')).toBe(false)
   })
 
   it('rejects boards without a category or categorized item', () => {
@@ -79,5 +81,18 @@ describe('buildSubmission', () => {
         categories: [{ id: 'a', name: 'A', itemIds: [] }],
       }),
     ).toThrow('Add at least one image before saving')
+
+    expect(() =>
+      buildSubmission({
+        items: {
+          unassigned: {
+            id: 'unassigned',
+            file: file('image', 'unassigned.png'),
+          },
+        },
+        itemList: ['unassigned'],
+        categories: [{ id: 'a', name: 'A', itemIds: [] }],
+      }),
+    ).toThrow('Move at least one item into a category before saving')
   })
 })

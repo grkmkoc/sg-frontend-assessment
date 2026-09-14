@@ -79,7 +79,7 @@ export function TierBoard({ controller }: { controller: TierListController }) {
       >
         <ItemContainer
           title="Item List"
-          description="New images always arrive here. Move all of them into categories before saving."
+          description="New images arrive here. Only items moved into categories are included when saving."
           container={ITEM_LIST}
           itemIds={controller.state.itemList}
           controller={controller}

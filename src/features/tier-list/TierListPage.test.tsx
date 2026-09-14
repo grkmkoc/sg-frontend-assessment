@@ -52,7 +52,7 @@ describe('TierListPage', () => {
     expect(within(itemList).getByText('dropped.png')).toBeVisible()
   })
 
-  it('adds an image, moves it without dragging, and saves multipart data', async () => {
+  it('saves categorized images while leaving Item List images unsubmitted', async () => {
     const user = userEvent.setup()
     const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(
       new Response(
@@ -71,7 +71,10 @@ describe('TierListPage', () => {
     await user.click(screen.getByRole('button', { name: 'Add category' }))
     await user.upload(
       screen.getByLabelText('Add images'),
-      new File(['image'], 'camera.png', { type: 'image/png' }),
+      [
+        new File(['image'], 'camera.png', { type: 'image/png' }),
+        new File(['queued'], 'queued.png', { type: 'image/png' }),
+      ],
     )
 
     const itemList = screen.getByRole('article', { name: 'Item List' })
@@ -84,11 +87,26 @@ describe('TierListPage', () => {
     await waitFor(() =>
       expect(screen.getByText(/Saved successfully: 1 image/)).toBeVisible(),
     )
+    const saveButton = screen.getByRole('button', { name: 'Save tier list' })
+    expect(saveButton).toBeDisabled()
+    expect(screen.getByText('No changes to save.')).toBeVisible()
+
+    await user.click(saveButton)
     expect(fetchMock).toHaveBeenCalledOnce()
+
+    const categoryName = screen.getByLabelText('Category name')
+    await user.clear(categoryName)
+    await user.type(categoryName, 'Excellent')
+    await user.tab()
+    expect(saveButton).toBeEnabled()
+
     const [, request] = fetchMock.mock.calls[0]
     expect(request).toMatchObject({ method: 'POST' })
     expect(request?.body).toBeInstanceOf(FormData)
     expect(request?.headers).toBeUndefined()
+    const submitted = request?.body as FormData
+    expect(submitted.has('image_test-2')).toBe(true)
+    expect(submitted.has('image_test-3')).toBe(false)
   })
 
   it('keeps the board intact when saving fails', async () => {

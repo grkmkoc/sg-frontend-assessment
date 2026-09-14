@@ -49,7 +49,7 @@ export function ItemContainer({
 
   return (
     <article
-      className={`item-container ${isOver || isFileOver ? 'is-over' : ''}`}
+      className={`item-container ${container.type === 'item-list' ? 'is-item-list' : ''} ${isOver || isFileOver ? 'is-over' : ''}`}
       aria-label={title}
       onDragEnter={handleFileDrag}
       onDragOver={handleFileDrag}
@@ -65,7 +65,10 @@ export function ItemContainer({
           />
         ) : (
           <div>
-            <h3>{title}</h3>
+            <div className="container-title-row">
+              <h3>{title}</h3>
+              <span className="pool-badge">Unassigned pool</span>
+            </div>
             {description && <p>{description}</p>}
           </div>
         )}
@@ -73,6 +76,23 @@ export function ItemContainer({
           <span>
             {itemIds.length} item{itemIds.length === 1 ? '' : 's'}
           </span>
+          {container.type === 'item-list' && (
+            <label
+              className={`file-button ${controller.isSaving ? 'disabled' : ''}`}
+            >
+              <span>Add images</span>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                disabled={controller.isSaving}
+                onChange={(event) => {
+                  if (event.target.files) controller.addFiles(event.target.files)
+                  event.target.value = ''
+                }}
+              />
+            </label>
+          )}
           {category && (
             <button
               className="text-button danger"
@@ -95,7 +115,7 @@ export function ItemContainer({
           {itemIds.length === 0 ? (
             <p className="container-empty">
               {container.type === 'item-list'
-                ? 'Drop image files here, or use Add images above'
+                ? 'Drop image files here, or use Add images'
                 : 'Move or drag items here'}
             </p>
           ) : (

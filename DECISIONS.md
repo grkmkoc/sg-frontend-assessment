@@ -1,11 +1,21 @@
 # Engineering decisions
 
-- **Plain CSS with a small token layer.** This app is intentionally small. I am
-  comfortable with Tailwind, SCSS, CSS Modules, design systems, and tokenized
-  component styling, but introducing a heavier styling layer here would add
-  ceremony without improving the core assessment. Styling stays simple while
-  shared colors, spacing, radii, typography, borders, and surfaces use a small
-  set of custom properties.
+- **Plain CSS with a small token layer.** The assessment uses plain CSS
+  intentionally because the application is small and bounded. Rather than
+  introducing Tailwind, Sass, CSS Modules, or a component framework purely for
+  structural appearance, the styling uses a small primitive-to-semantic token
+  layer for the application palette. This keeps the implementation
+  lightweight while retaining consistent typography, color, spacing, surfaces,
+  focus states, and component hierarchy. The final visual direction uses a warm
+  light canvas, white surfaces, restrained teal accents, and soft neutral borders.
+  Modest radii and shallow shadows give major regions clear hierarchy without
+  turning the workspace into a landing page. Inter Variable provides the full
+  sans-serif hierarchy for headings, body copy, and controls. Teal is reserved
+  for Save, focus, active dragging, and small specification labels. Dashed drop
+  outlines provide feedback beyond color alone.
+  In a larger application these tokens could naturally become the foundation
+  for CSS Modules, Sass architecture, Tailwind configuration, or a shared
+  component/design-system package.
 
 - **A pure `domain/` module.** Movement, ordering, deletion behavior, and state
   invariants are application rules rather than React concerns. Pure transitions
@@ -31,6 +41,11 @@
 - **Category deletion preserves images.** The specification does not define
   deletion semantics. Returning the category's items to the Item List, in order,
   is the safer assumption because it does not silently destroy user data.
+
+- **Item List remains an unsubmitted backlog.** Save requires at least one
+  categorized image but does not require every imported image to be assigned.
+  The multipart payload includes only category items, so large working sets can
+  be submitted incrementally without repetitive organization work.
 
 - **A deliberately minimal API receiver.** The included endpoint makes the
   exercise self-contained and verifies the multipart contract end-to-end. It

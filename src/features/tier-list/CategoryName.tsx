@@ -36,7 +36,9 @@ export function CategoryName({
 
   return (
     <div className="category-name-field">
-      <label htmlFor={`category-${category.id}`}>Category name</label>
+      <label className="visually-hidden" htmlFor={`category-${category.id}`}>
+        Category name
+      </label>
       <input
         id={`category-${category.id}`}
         value={name}

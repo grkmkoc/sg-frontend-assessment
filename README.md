@@ -100,8 +100,9 @@ docker build \
 - Category names are trimmed and cannot be empty; duplicates are allowed.
 - Removing a category appends its items to the Item List in their existing
   order. Removing an image deletes it from the current in-memory session.
-- Saving requires at least one category, at least one image, and no unassigned
-  items. Empty categories are allowed.
+- Saving requires at least one category and at least one categorized image.
+  Unassigned Item List images remain in the workspace and are excluded from the
+  submission. Empty categories are allowed.
 - Editing and drag/drop are disabled while a request is in progress. Failed
   requests preserve the board; successful requests leave it visible.
 

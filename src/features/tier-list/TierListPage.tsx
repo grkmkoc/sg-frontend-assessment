@@ -37,24 +37,10 @@ export function TierListPage() {
         </p>
       </header>
 
-      <section className="controls" aria-labelledby="build-controls-title">
-        <h2 id="build-controls-title" className="visually-hidden">
-          Build controls
+      <section className="controls" aria-labelledby="category-controls-title">
+        <h2 id="category-controls-title" className="visually-hidden">
+          Category controls
         </h2>
-        <label className={`file-button ${controller.isSaving ? 'disabled' : ''}`}>
-          <span>Add images</span>
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            disabled={controller.isSaving}
-            onChange={(event) => {
-              if (event.target.files) controller.addFiles(event.target.files)
-              event.target.value = ''
-            }}
-          />
-        </label>
-
         <form className="category-form" onSubmit={handleAddCategory}>
           <label htmlFor="new-category">New category</label>
           <div className="field-row">

@@ -152,7 +152,7 @@ export function useTierListController(
   }
 
   const save = async () => {
-    if (saveState.kind === 'saving') return
+    if (saveState.kind === 'saving' || saveState.kind === 'success') return
     const validationError = validateForSubmission(state)
     if (validationError) {
       setSaveState({ kind: 'error', message: validationError })
@@ -185,7 +185,10 @@ export function useTierListController(
     fileError,
     saveState,
     isSaving: saveState.kind === 'saving',
-    saveDisabledReason: validateForSubmission(state),
+    saveDisabledReason:
+      saveState.kind === 'success'
+        ? 'No changes to save.'
+        : validateForSubmission(state),
     getPreviewUrl: (itemId: string) => previews.current.get(itemId),
     addFiles,
     deleteItem,

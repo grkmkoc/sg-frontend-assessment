@@ -24,8 +24,8 @@ export function validateForSubmission(state: TierListState): string | null {
   if (Object.keys(state.items).length === 0) {
     return 'Add at least one image before saving.'
   }
-  if (state.itemList.length > 0) {
-    return 'Move every item into a category before saving.'
+  if (state.categories.every(({ itemIds }) => itemIds.length === 0)) {
+    return 'Move at least one item into a category before saving.'
   }
   return null
 }
